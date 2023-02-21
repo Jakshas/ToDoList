@@ -3,6 +3,8 @@ import { useState } from "react";
 export function AddTask() {
     const initialFormState = {
         name: '',
+        dueDate:'',
+        
       };
       const [task, setTask] = useState(initialFormState);
 
@@ -15,7 +17,7 @@ export function AddTask() {
     const handleSubmit = async (event: { preventDefault: () => void; }) => {
         event.preventDefault();
     
-        await fetch(`http://localhost:8080/api/task`, {
+        await fetch(`http://localhost:8080/api/addtask`, {
           method: 'POST',
           headers: {
             'Access-Control-Allow-Origin': '*',
