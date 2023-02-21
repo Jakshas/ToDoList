@@ -3,6 +3,7 @@ package com.todo.backend.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,13 +32,18 @@ public class TaskController {
         return taskRepository.findById(id).get();
     }
 
-    @PostMapping("/newtask")
-    public Task newTask(@RequestBody Task newtask) {
+    @PostMapping("/addtask")
+    public Task addTask(@RequestBody Task newtask) {
         return taskRepository.save(newtask);
     }
 
     @PutMapping("/edittask")
     public Task editTask(@RequestBody Task edittask) {
         return taskRepository.save(edittask);
+    }
+
+    @DeleteMapping("/deletetask")
+    public void deleteTask(@RequestBody Task task) {
+        taskRepository.delete(task);
     }
 }
