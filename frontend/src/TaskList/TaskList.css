@@ -1,0 +1,20 @@
+.lines span{
+    background-color:gray; 
+    font-size: small;
+    padding:0 10px; 
+}
+.lines {
+    width: 100%; 
+    text-align: center; 
+    border-bottom: 1px solid #000; 
+    line-height: 0.1em;
+    margin: 10px 0 20px; 
+ } 
+
+ .List{
+    display: flex;
+    flex-direction: column;
+    width:50%;
+    margin: 0 auto;
+    align-items: center;
+ }

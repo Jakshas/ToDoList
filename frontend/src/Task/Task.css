@@ -1,0 +1,38 @@
+.hide {
+    display: block;
+    transition: 0.15s;
+    /* position: absolute; */
+    max-height: 0em;
+    overflow: hidden;
+}
+  
+.Task:hover + .hide, .hide:hover, .EditTask:hover {
+    max-height: 1.5em;
+}
+
+.TaskList{
+    width: fit-content;
+    padding: 5px;
+    background-color: lightslategray;
+    border-radius: 10px;
+    margin: 5px;
+    border: solid black 1px;
+    display: block;
+    text-align: center;
+    list-style-type: none;
+    transition: 0.15s;
+
+}
+
+.TaskList:hover {
+    transform: scale(1.10);
+  }
+
+.EditTask{
+    overflow: hidden;
+    max-height: 0px;
+    transition: max-height 0.5s;
+}
+.EditTask.open{
+    max-height: 300px;
+}

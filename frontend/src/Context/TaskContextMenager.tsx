@@ -6,7 +6,7 @@ export const TaskContextManager: React.FC<{children: ReactElement}> = ({ childre
     const [Tasks, setTasks] = useState<ITask[]>([]);
 
     const deleteTask = (task: ITask) => {
-        setTasks(prevTasks=>prevTasks.filter(prevTasks => prevTasks.id !== task.id));
+        setTasks(Tasks.filter(prevTasks => prevTasks.id !== task.id));
     }
 
     const addTask = (task: ITask) => {
