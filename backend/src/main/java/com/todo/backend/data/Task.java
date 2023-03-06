@@ -9,6 +9,8 @@ import lombok.Setter;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,6 +24,7 @@ import jakarta.persistence.ManyToOne;
 @Getter
 @Setter
 @Entity
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Task {
 
     enum Priority {

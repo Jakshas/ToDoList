@@ -1,8 +1,11 @@
 package com.todo.backend.controllers;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,17 +17,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.todo.backend.data.Task;
 import com.todo.backend.data.repositories.TaskRepository;
+import com.todo.backend.data.repositories.UserDataRepository;
 
+@Secured("ROLE_NORMAL")
 @RequestMapping("/api")
+@CrossOrigin(origins = "*")
 @RestController
 public class TaskController {
 
     @Autowired
     private TaskRepository taskRepository;
 
+    @Autowired
+    private UserDataRepository userDataRepository;
+
     @GetMapping("/tasks")
-    public List<Task> tasks() {
-        return taskRepository.findAll();
+    public List<Task> tasks(Principal principal) {
+        return taskRepository.findAll().stream()
+                .filter((task) -> task.getUser().getId() == Integer.valueOf(principal.getName())).toList();
     }
 
     @GetMapping("/task/{id}")
@@ -33,7 +43,8 @@ public class TaskController {
     }
 
     @PostMapping("/addtask")
-    public Task addTask(@RequestBody Task newtask) {
+    public Task addTask(Principal principal, @RequestBody Task newtask) {
+        newtask.setUser(userDataRepository.getReferenceById(Integer.valueOf(principal.getName())));
         return taskRepository.save(newtask);
     }
 

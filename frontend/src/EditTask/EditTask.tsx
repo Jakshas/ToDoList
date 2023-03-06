@@ -1,8 +1,13 @@
 import { useContext, useState } from "react";
-import { TaskContext } from "../Context/context";
+import { TaskContext, UserContext } from "../Context/context";
+import useToken from "../Hooks/UseToken";
 import { ITask } from "../Task/Task";
+import { getColor } from "../utils/functions";
+import { editTaskMutation } from "../utils/queries";
 
 export function EditTask(props: {setClicked:React.Dispatch<React.SetStateAction<boolean>>, task:ITask}) {
+  const {User} = useContext(UserContext);
+    const {token} = useToken();
     const { updateTask } = useContext(TaskContext)
       const initialFormState = {
             id:props.task.id,
@@ -21,14 +26,8 @@ export function EditTask(props: {setClicked:React.Dispatch<React.SetStateAction<
       const handleSubmit = async (event: { preventDefault: () => void; }) => {
           event.preventDefault();
       
-          let response = await fetch(`http://localhost:8080/api/addtask`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(task)
-          })
-          const content: ITask = await response.json();
+          let response = editTaskMutation(token, task);
+          const content: ITask = await (await response).json();
           content.dueDate = new Date(task.dueDate);
           updateTask(content);
           props.setClicked(false);
@@ -48,9 +47,9 @@ export function EditTask(props: {setClicked:React.Dispatch<React.SetStateAction<
               <br/>
               <label>
                   Priority<br/>
-                  <input  type="radio" id="high" name="priority" value="High"  onChange={handleChange} defaultChecked={initialFormState.priority === "High"}/> <label className="High" htmlFor="High">High</label>
-                  <input type="radio" id="medium" name="priority" value="Medium" onChange={handleChange} defaultChecked={initialFormState.priority === "Medium"}/> <label className="Medium" htmlFor="Medium">Medium</label>
-                  <input type="radio" id="low" name="priority" value="Low" onChange={handleChange} defaultChecked={initialFormState.priority === "Low"}/> <label className="Low" htmlFor="Low">Low</label>
+                  <input  type="radio" id="high" name="priority" value="High"  onChange={handleChange} defaultChecked={initialFormState.priority === "High"}/> <label className="border" style={{color:getColor("High", User)}} htmlFor="High">High</label>
+                  <input type="radio" id="medium" name="priority" value="Medium" onChange={handleChange} defaultChecked={initialFormState.priority === "Medium"}/> <label className="border" style={{color:getColor("Medium", User)}} htmlFor="Medium">Medium</label>
+                  <input type="radio" id="low" name="priority" value="Low" onChange={handleChange} defaultChecked={initialFormState.priority === "Low"}/> <label className="border" style={{color:getColor("Low", User)}} htmlFor="Low">Low</label>
               </label>
               <br/>
               <input type="submit" value={"Save"} onClick={handleSubmit}></input>

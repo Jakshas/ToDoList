@@ -1,20 +1,39 @@
 import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { JsxElement } from "typescript";
 import { TaskContext } from "../Context/context";
+import useToken from "../Hooks/UseToken";
 import { ITask, Task } from "../Task/Task";
 import { getTasksQuery } from "../utils/queries";
 import "./TaskList.css"
 
 export function TaskList() {
+    const {token } = useToken();
+    const navigate = useNavigate()
     const { Tasks, setTasks } = useContext(TaskContext)
     const [ list, setList] = useState<JSX.Element[]>()
 
     useEffect(() => {
-        getTasksQuery().then(data => {
+      try {
+        getTasksQuery(token).then((data) => {
+          if (data.error === "Forbidden") {
+            sessionStorage.removeItem('auth-token');
+            sessionStorage.removeItem('ID');
+            navigate("/");
+            window.location.reload();
+          }
           let tasks:ITask[] = data.map((task:ITask)=>{ return{...task, dueDate : new Date(task.dueDate)}});
           tasks.sort((task1:ITask, task2:ITask) => {return task1.dueDate < task2.dueDate? -1 : 1});
           setTasks(tasks);
         })
+      } catch (error:any) {
+        if (error === "Forbidden") {
+          sessionStorage.removeItem('auth-token');
+          sessionStorage.removeItem('ID');
+          window.location.reload();
+        }
+      }
+
       }, [setTasks]);
     
       useEffect(() => {

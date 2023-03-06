@@ -16,3 +16,34 @@ export const TaskContext = React.createContext<TaskContextType>({
     deleteTask: () => { },
     setTasks: () => {}
 });
+
+export interface IUser{
+    id:number;
+
+    username:string;
+
+    email:string;
+
+    password:string;
+
+    colorHigh:string;
+    colorMedium:string;
+    colorLow:string;
+}
+
+export interface UserContextType{
+    User:IUser
+    changeUser:(user:IUser)=> void
+}
+
+export const UserContext = React.createContext<UserContextType>({
+    User: {    
+        id:0,
+        username:"",
+        email:"",
+        password:"",
+        colorHigh:"",
+        colorMedium:"",
+        colorLow:""},
+    changeUser:()=> {}
+});

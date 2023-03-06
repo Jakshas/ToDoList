@@ -1,12 +1,16 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { TaskContext } from "../Context/context";
+import { TaskContext, UserContext } from "../Context/context";
+import useToken from "../Hooks/UseToken";
 import { ITask } from "../Task/Task";
+import { getColor } from "../utils/functions";
+import { addTaskMutation } from "../utils/queries";
 import "./AddTask.css"
 
 export function AddTask(props: {setClicked:React.Dispatch<React.SetStateAction<boolean>>, date:Date|undefined}) {
+  const {token} = useToken();
+  const {User} = useContext(UserContext);
   const {addTask} = useContext(TaskContext);
-  const navigate = useNavigate();
     const initialFormState = {
         name: '',
         dueDate: props.date=== undefined ? new Date() : props.date,
@@ -24,14 +28,8 @@ export function AddTask(props: {setClicked:React.Dispatch<React.SetStateAction<b
         event.preventDefault();
         task.dueDate = new Date(task.dueDate);
         task.dueDate = new Date(task.dueDate.getTime() - task.dueDate.getTimezoneOffset());
-        let response = await fetch(`http://localhost:8080/api/addtask`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(task)
-        })
-        const content: ITask = await response.json();
+        let response = addTaskMutation(token, task);
+        const content: ITask = await (await response).json();
         content.dueDate = new Date(task.dueDate);
         addTask(content);
         props.setClicked(false);
@@ -51,9 +49,9 @@ export function AddTask(props: {setClicked:React.Dispatch<React.SetStateAction<b
             <br/>
             <label>
                 Priority<br/>
-                <input  type="radio" id="high" name="priority" value="High"  onChange={handleChange} defaultChecked/> <label className="High" htmlFor="High">High</label>
-                <input type="radio" id="medium" name="priority" value="Medium" onChange={handleChange}/> <label className="Medium" htmlFor="Medium">Medium</label>
-                <input type="radio" id="low" name="priority" value="Low" onChange={handleChange}/> <label className="Low" htmlFor="Low">Low</label>
+                <input  type="radio" id="high" name="priority" value="High"  onChange={handleChange} defaultChecked/> <label className="border" style={{color:getColor("High", User)}} htmlFor="High">High</label>
+                <input type="radio" id="medium" name="priority" value="Medium" onChange={handleChange}/> <label className="border" style={{color:getColor("Medium", User)}} htmlFor="Medium">Medium</label>
+                <input type="radio" id="low" name="priority" value="Low" onChange={handleChange}/> <label className="border" style={{color:getColor("Low", User)}} htmlFor="Low">Low</label>
             </label>
             <br/>
             <input type="button" value={"Submit"} onClick={handleSubmit}></input>
